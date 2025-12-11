@@ -39,3 +39,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('books', BookController::class);
     Route::resource('categories', CategoryController::class);
 });
+
+Route::get('/', [BookController::class, 'welcome'])->name('welcome');
+Route::get('/books/user/{id}', [BookController::class, 'showuser'])->name('books.showuser');

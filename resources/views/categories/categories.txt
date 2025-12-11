@@ -1,0 +1,127 @@
+@extends('layouts.app')
+
+@section('content')
+<h4>Create Category</h4>
+<div class="container mt-5 mb-5">
+    <form action="{{ route('categories.store') }}" method="POST">
+    @csrf
+    <div class="form-group mb-3">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" >
+     <!-- tampilkan pesan error -->
+     @error('name')
+        <div class="alert alert-danger mt-2">
+            {{ $message }}
+        </div>
+        @enderror
+    </div>
+    <div class="form-group mb-3">
+        <label for="description">Description</label>
+        <textarea name="description" id="description" class="form-control">{{ old('description') }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-md btn-primary me-3">Save</button>
+     <button type="reset" class="btn btn-md btn-primary me-3">Reset</button>
+</form>
+</div>
+@endsection@extends('layouts.app')
+
+@section('content')
+<h4>Create Category</h4>
+<div class="container mt-5 mb-5">
+    <form action="{{ route('categories.update',$category->id) }}" method="POST">
+    @csrf
+    @method('PUT')
+    <div class="form-group mb-3">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name',$category->name) }}" >
+     <!-- tampilkan pesan error -->
+     @error('name')
+        <div class="alert alert-danger mt-2">
+            {{ $message }}
+        </div>
+        @enderror
+    </div>
+    <div class="form-group mb-3">
+        <label for="description">Description</label>
+        <textarea name="description" id="description" class="form-control">{{ old('description',$category->description) }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-md btn-primary me-3">Save</button>
+    <a href="{{ route('categories.index') }}" class="btn btn-secondary ms-2">Cancel</a>
+</form>
+</div>
+@endsection@extends('layouts.app')
+
+@section('content')
+<h4>List Categories</h4>
+<a href="{{ route('categories.create') }}" class="btn btn-sm btn-primary">Add Category</a>
+<br/><br />
+<!-- Include Alert Messages -->
+@include('layouts.alert')
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse ($categories as $category)
+        <tr>
+            <td>{{ $category->name }}</td>
+            <td>{{ $category->description }}</td>
+            <td>
+                <a href="{{ route('categories.show',$category->id) }}" class="btn btn-sm btn-info">View</a>
+                <a href="{{ route('categories.edit',$category->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                <form onsubmit="return confirm('Apakah anda yakin ?');" action="{{ route('categories.destroy',$category->id) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        @empty
+                                    <div class="alert alert-info">
+                                        data masih kosong.
+                                    </div>
+            @endforelse
+    </tbody>
+</table>
+@endsection@extends('layouts.app')
+
+@section('content')
+<div class="container my-4">
+    <h4 class="mb-3">Category Details</h4>
+
+    <!-- Include Alert Messages -->
+    @include('layouts.alert')
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ $category->name }}</h5>
+                    <hr>
+                    <p class="card-text">{{ $category->description ?? '-' }}</p>
+
+                    <div class="d-flex gap-2 mt-3">
+                        <a href="{{ route('categories.index') }}" class="btn btn-sm btn-secondary">Back</a>
+                        <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-warning">Edit</a>
+
+                        <form action="{{ route('categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Apakah anda yakin ?');" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-muted small">
+                <span>Created: {{ $category->created_at ? \Carbon\Carbon::parse($category->created_at)->diffForHumans() : '-' }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
